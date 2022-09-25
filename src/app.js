@@ -1,7 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import palavras from './palavras';
 
 export default function App() {
+
+    const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
     return (
         <Container>
             <Header>
@@ -11,36 +15,12 @@ export default function App() {
                         <p>Escolher Palavra</p>
                     </Escolher>
                 </LayoutButton>
+                <GameWord>
+                    <p>________</p>
+                </GameWord>
             </Header>
             <AlfabetoLine>
-                <LetterButton>A</LetterButton>
-                <LetterButton>B</LetterButton>
-                <LetterButton>C</LetterButton>
-                <LetterButton>D</LetterButton>
-                <LetterButton>E</LetterButton>
-                <LetterButton>F</LetterButton>
-                <LetterButton>G</LetterButton>
-                <LetterButton>H</LetterButton>
-                <LetterButton>I</LetterButton>
-                <LetterButton>J</LetterButton>
-                <LetterButton>K</LetterButton>
-                <LetterButton>L</LetterButton>
-                <LetterButton>M</LetterButton>
-            </AlfabetoLine>
-            <AlfabetoLine>
-                <LetterButton>N</LetterButton>
-                <LetterButton>O</LetterButton>
-                <LetterButton>P</LetterButton>
-                <LetterButton>Q</LetterButton>
-                <LetterButton>R</LetterButton>
-                <LetterButton>S</LetterButton>
-                <LetterButton>T</LetterButton>
-                <LetterButton>U</LetterButton>
-                <LetterButton>V</LetterButton>
-                <LetterButton>W</LetterButton>
-                <LetterButton>X</LetterButton>
-                <LetterButton>Y</LetterButton>
-                <LetterButton>Z</LetterButton>
+                {alfabeto.map((s) => <LetterButton><p>{s}</p></LetterButton> )}
             </AlfabetoLine>
 
             <GuessBox>
@@ -129,4 +109,13 @@ width: 50px;
         color: blue;
     }
 
+`
+const GameWord = styled.div`
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    p{
+        color: darkgray;
+        font-size: 20px;
+    }
 `
