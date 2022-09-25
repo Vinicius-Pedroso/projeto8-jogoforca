@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import palavras from './palavras';
+import { useState } from 'react';
 
 export default function App() {
+    const [erros, setErros] = useState(0)
+    const [start, setStart] = useState(false)
 
     const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
@@ -11,7 +14,7 @@ export default function App() {
             <Header>
                 <img src="img/forca0.png" />
                 <LayoutButton>
-                    <Escolher>
+                    <Escolher onClick={() => StartGame()}>
                         <p>Escolher Palavra</p>
                     </Escolher>
                 </LayoutButton>
@@ -32,6 +35,10 @@ export default function App() {
 
     );
 
+}
+
+function StartGame(){
+    setStart(true)
 }
 
 const LayoutButton = styled.div`
