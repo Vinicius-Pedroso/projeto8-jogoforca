@@ -9,7 +9,7 @@ export default function App() {
     const [rightWord, setRightWord] = useState("")
     const [currentWord, setCurrentWord] = useState("")
     const [guess, setGuess] = useState("")
-    const [lettersDone, setLettersDone] = useState("")
+    const [lettersDone, setLettersDone] = useState([])
 
     const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
@@ -25,7 +25,7 @@ export default function App() {
                 {error >= 6 && <img src="img/forca6.png" />}
                 <LeftColunm>
                     <LayoutButton>
-                        <Escolher onClick={() => StartOfTheGame({ setError, setGameGoing, setRightWord, setCurrentWord })}>
+                        <Escolher onClick={() => StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone)}>
                             <p>Escolher Palavra</p>
                         </Escolher>
                     </LayoutButton>
@@ -41,37 +41,57 @@ export default function App() {
                 {(!gameGoing || error >= 6) && alfabeto.map((s) =>
                     <LetterOff><p>{s}</p>
                     </LetterOff>)}
-                {gameGoing && error < 6 && alfabeto.map((s) =>
-                    <LetterOn onClick={() => TryLetter({ s, lettersDone, setLettersDone, setError, error})}><p>{s}</p></LetterOn>)}
+                {gameGoing && error < 6 && alfabeto.map((l) =>
+                    <LetterOn disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord)}><p>{l}</p></LetterOn>)}
             </AlfabetoLine>
 
             <GuessBox>
                 <h2>Já sei a palavra!</h2>
                 <GuessImput type="text" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
                 {!gameGoing && <GuessButton><p>Chutar</p></GuessButton>}
-                {gameGoing && <GuessButton onClick={() => TryGuess({guess, rightWord, setCurrentWord, setError})}><p>Chutar</p></GuessButton>}
+                {gameGoing && <GuessButton onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError)}><p>Chutar</p></GuessButton>}
             </GuessBox>
         </Container>
 
     );
 }
 
-function TryGuess ({guess, rightWord, setCurrentWord, setError}){
-    if (guess === rightWord){
+function TryGuess(guess, rightWord, setCurrentWord, setError) {
+    if (guess === rightWord) {
         setCurrentWord(rightWord)
     } else {
         setError(6)
     }
 }
 
-function TryLetter({ Letter, lettersDone, setLettersDone, setError, error}) {
-    setError(error +1)
-    setLettersDone(+ Letter);
+function TryLetter(letter, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord) {
+    if (rightWord.includes(letter)) {
+        let CurrentArray = [];
+        for (let i = 0; i < rightWord.length; i++) {
+            if (letter === rightWord[i]) {
+
+                CurrentArray.push(letter + " ")
+            } else {
+                CurrentArray.push(currentWord[i])
+            }
+        }
+        setCurrentWord(CurrentArray)
+    } else {
+        setError(error + 1)
+    }
+    let NotInclude = !currentWord.includes("_ ")
+    if (NotInclude) {
+        setCurrentWord(rightWord)
+    }
+    let NewLetter = [letter]
+    let NewCurrentArray = [...lettersDone, ...NewLetter]
+    setLettersDone(NewCurrentArray)
 }
 
-function StartOfTheGame({ setError, setGameGoing, setRightWord, setCurrentWord }) {
+function StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone) {
     setError(0)
     setGameGoing(true)
+    setLettersDone([])
     const min = 0;
     const max = 231;
     const rand = Math.round(min + Math.random() * (max));
@@ -127,17 +147,20 @@ const GameWord = styled.div`
     }
 `
 const AlfabetoLine = styled.div`
-    width: 100%;
+    width: 650px;
     padding-bottom: 10px;
     display: flex;
+    flex-wrap: wrap;
     padding-left: 10px;
     justify-content: space-between;
 `
 
 const LetterOff = styled.button`
-    width: 33px;
-    height: 33px;
+    width: 40px;
+    height: 40px;
     background-color: gray;
+    margin-left: 8px;
+    margin-top: 15px;
     border-radius: 4px;
     border-width: 1px;
     display: flex;
@@ -149,8 +172,10 @@ const LetterOff = styled.button`
 `
 
 const LetterOn = styled.button`
-    width: 33px;
-    height: 33px;
+    width: 40px;
+    height: 40px;
+    margin-left: 8px;
+    margin-top: 15px;
     background-color: lightblue;
     border-radius: 4px;
     border-width: 1px;
@@ -160,6 +185,12 @@ const LetterOn = styled.button`
     justify-content: center;
     p{
         color: darkblue;
+    }
+    :disabled {
+        background-color: gray;
+        p {
+            color: darkgray;
+        }
     }
 `
 
