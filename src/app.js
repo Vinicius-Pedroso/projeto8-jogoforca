@@ -10,22 +10,23 @@ export default function App() {
     const [currentWord, setCurrentWord] = useState("")
     const [guess, setGuess] = useState("")
     const [lettersDone, setLettersDone] = useState([])
+    const [endGame, setEndGame] = useState(false)
 
     const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
     return (
         <Container>
             <Header>
-                {error === 0 && <img src="img/forca0.png" />}
-                {error === 1 && <img src="img/forca1.png" />}
-                {error === 2 && <img src="img/forca2.png" />}
-                {error === 3 && <img src="img/forca3.png" />}
-                {error === 4 && <img src="img/forca4.png" />}
-                {error === 5 && <img src="img/forca5.png" />}
-                {error >= 6 && <img src="img/forca6.png" />}
+                {error === 0 && <img src="img/forca0.png" alt="erro0"/>}
+                {error === 1 && <img src="img/forca1.png" alt="erro1"/>}
+                {error === 2 && <img src="img/forca2.png" alt="erro2"/>}
+                {error === 3 && <img src="img/forca3.png" alt="erro3"/>}
+                {error === 4 && <img src="img/forca4.png" alt="erro4"/>}
+                {error === 5 && <img src="img/forca5.png" alt="erro5"/>}
+                {error >= 6 && <img src="img/forca6.png" alt="erro6"/>}
                 <LeftColunm>
                     <LayoutButton>
-                        <Escolher onClick={() => StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone)}>
+                        <Escolher onClick={() => StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone, setEndGame)}>
                             <p>Escolher Palavra</p>
                         </Escolher>
                     </LayoutButton>
@@ -38,58 +39,154 @@ export default function App() {
 
             </Header>
             <AlfabetoLine>
-                {(!gameGoing || error >= 6) && alfabeto.map((s) =>
+                {(!gameGoing || error >= 6 || endGame) && alfabeto.map((s) =>
                     <LetterOff><p>{s}</p>
                     </LetterOff>)}
-                {gameGoing && error < 6 && alfabeto.map((l) =>
-                    <LetterOn disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord)}><p>{l}</p></LetterOn>)}
+                {gameGoing && error < 6 && !endGame && alfabeto.map((l) =>
+                    <LetterOn disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame)}><p>{l}</p></LetterOn>)}
             </AlfabetoLine>
 
             <GuessBox>
                 <h2>Já sei a palavra!</h2>
                 <GuessImput type="text" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
-                {!gameGoing && <GuessButton><p>Chutar</p></GuessButton>}
-                {gameGoing && <GuessButton onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError)}><p>Chutar</p></GuessButton>}
+                {(!gameGoing || endGame ) && <GuessButton><p>Chutar</p></GuessButton>}
+                {gameGoing && !endGame && <GuessButton onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame)}><p>Chutar</p></GuessButton>}
             </GuessBox>
         </Container>
 
     );
 }
 
-function TryGuess(guess, rightWord, setCurrentWord, setError) {
+function TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame) {
     if (guess === rightWord) {
         setCurrentWord(rightWord)
     } else {
         setError(6)
     }
+    setEndGame(true)
 }
 
-function TryLetter(letter, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord) {
-    if (rightWord.includes(letter)) {
-        let CurrentArray = [];
-        for (let i = 0; i < rightWord.length; i++) {
-            if (letter === rightWord[i]) {
-
-                CurrentArray.push(letter + " ")
-            } else {
-                CurrentArray.push(currentWord[i])
+function TryLetter(letter, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame) {
+    if (letter ==="a"){
+        if (rightWord.includes("a")||rightWord.includes("á")||rightWord.includes("ã")||rightWord.includes("â")) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if ("a" === rightWord[i]||"â" === rightWord[i]||"ã" === rightWord[i]||"á" === rightWord[i]) {
+                    CurrentArray.push(rightWord[i] + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
             }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
         }
-        setCurrentWord(CurrentArray)
-    } else {
-        setError(error + 1)
     }
+    if (letter ==="e"){
+        if (rightWord.includes("e")||rightWord.includes("ê")||rightWord.includes("é")) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if ("e" === rightWord[i]||"ê" === rightWord[i]||"é" === rightWord[i]) {
+                    CurrentArray.push(rightWord[i] + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
+            }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
+        }
+    }
+    if (letter ==="o"){
+        if (rightWord.includes("o")||rightWord.includes("ô")||rightWord.includes("ó")) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if ("o" === rightWord[i]||"ô" === rightWord[i]||"ó" === rightWord[i]) {
+                    CurrentArray.push(rightWord[i] + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
+            }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
+        }
+    }
+    if (letter ==="i"){
+        if (rightWord.includes("i")||rightWord.includes("í")) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if ("i" === rightWord[i]||"í" === rightWord[i]) {
+                    CurrentArray.push(rightWord[i] + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
+            }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
+        }
+    }
+    if (letter ==="u"){
+        if (rightWord.includes("u")||rightWord.includes("ú")) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if ("u" === rightWord[i]||"ú" === rightWord[i]) {
+                    CurrentArray.push(rightWord[i] + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
+            }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
+        }
+    }
+    if (letter ==="c"){
+        if (rightWord.includes("c")||rightWord.includes("ç")) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if ("c" === rightWord[i]||"ç" === rightWord[i]) {
+                    CurrentArray.push(rightWord[i] + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
+            }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
+        }
+    }
+    if (letter !== "a" && letter !== "e" && letter !== "i" && letter !== "o"&&letter !== "u"&&letter !== "c"){
+        if (rightWord.includes(letter)) {
+            let CurrentArray = [];
+            for (let i = 0; i < rightWord.length; i++) {
+                if (letter === rightWord[i]) {
+    
+                    CurrentArray.push(letter + " ")
+                } else {
+                    CurrentArray.push(currentWord[i])
+                }
+            }
+            setCurrentWord(CurrentArray)
+        } else {
+            setError(error + 1)
+        }
+    }
+
     let NotInclude = !currentWord.includes("_ ")
     if (NotInclude) {
         setCurrentWord(rightWord)
+        setEndGame(true)
     }
     let NewLetter = [letter]
     let NewCurrentArray = [...lettersDone, ...NewLetter]
     setLettersDone(NewCurrentArray)
 }
 
-function StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone) {
+function StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone, setEndGame) {
     setError(0)
+    setEndGame(false)
     setGameGoing(true)
     setLettersDone([])
     const min = 0;
