@@ -31,8 +31,8 @@ export default function App() {
                             <p>Escolher Palavra</p>
                         </Escolher>
                     </LayoutButton>
-                    <GameWord data-identifier="type-guess">
-                        {gameGoing && currentWord.includes("_ ") && error < 6 && <h1 data-identifier="word">{currentWord}</h1>}
+                    <GameWord data-identifier="word">
+                        {gameGoing && currentWord.includes("_ ") && error < 6 && <h1 >{currentWord}</h1>}
                         {error >= 6 && <GameLost><h1>{rightWord}</h1></GameLost>}
                         {error < 6 && !currentWord.includes("_ ") &&<GameWon><h1>{rightWord}</h1></GameWon>}
                     </GameWord>
@@ -41,15 +41,15 @@ export default function App() {
             </Header>
             <AlfabetoLine>
                 {(!gameGoing || error >= 6 || endGame ||(!currentWord.includes("_ ") && gameGoing)) && alfabeto.map((s) =>
-                    <LetterOff data-identifier="letter"><p>{s}</p>
+                    <LetterOff key={s} data-identifier="letter"><p>{s}</p>
                     </LetterOff>)}
                 {gameGoing && error < 6 && !endGame && currentWord.includes("_ ") && alfabeto.map((l) =>
-                    <LetterOn data-identifier="letter" disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame)}><p>{l}</p></LetterOn>)}
+                    <LetterOn data-identifier="letter" key={l} disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame)}><p>{l}</p></LetterOn>)}
             </AlfabetoLine>
 
             <GuessBox>
                 <h2>Já sei a palavra!</h2>
-                <GuessImput type="text" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
+                <GuessImput type="text" data-identifier="type-guess" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
                 {(!gameGoing || endGame || (!currentWord.includes("_ ") && gameGoing)) && <GuessButton><p>Chutar</p></GuessButton>}
                 {gameGoing && !endGame && currentWord.includes("_ ") && <GuessButton data-identifier="guess-button" onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame)}><p>Chutar</p></GuessButton>}
             </GuessBox>
