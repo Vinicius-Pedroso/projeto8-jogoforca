@@ -17,21 +17,21 @@ export default function App() {
     return (
         <Container>
             <Header>
-                {error === 0 && <img src="img/forca0.png" alt="erro0"/>}
-                {error === 1 && <img src="img/forca1.png" alt="erro1"/>}
-                {error === 2 && <img src="img/forca2.png" alt="erro2"/>}
-                {error === 3 && <img src="img/forca3.png" alt="erro3"/>}
-                {error === 4 && <img src="img/forca4.png" alt="erro4"/>}
-                {error === 5 && <img src="img/forca5.png" alt="erro5"/>}
-                {error >= 6 && <img src="img/forca6.png" alt="erro6"/>}
+                {error === 0 && <img data-identifier="game-image" src="img/forca0.png" alt="erro0"/>}
+                {error === 1 && <img data-identifier="game-image" src="img/forca1.png" alt="erro1"/>}
+                {error === 2 && <img data-identifier="game-image" src="img/forca2.png" alt="erro2"/>}
+                {error === 3 && <img data-identifier="game-image" src="img/forca3.png" alt="erro3"/>}
+                {error === 4 && <img data-identifier="game-image" src="img/forca4.png" alt="erro4"/>}
+                {error === 5 && <img data-identifier="game-image" src="img/forca5.png" alt="erro5"/>}
+                {error >= 6 && <img data-identifier="game-image" src="img/forca6.png" alt="erro6"/>}
                 <LeftColunm>
                     <LayoutButton>
-                        <Escolher onClick={() => StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone, setEndGame)}>
+                        <Escolher data-identifier="choose-word" onClick={() => StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone, setEndGame)}>
                             <p>Escolher Palavra</p>
                         </Escolher>
                     </LayoutButton>
-                    <GameWord>
-                        {gameGoing && (currentWord !== rightWord) && error < 6 && <h1>{currentWord}</h1>}
+                    <GameWord data-identifier="type-guess">
+                        {gameGoing && (currentWord !== rightWord) && error < 6 && <h1 data-identifier="word">{currentWord}</h1>}
                         {error >= 6 && <GameLost><h1>{rightWord}</h1></GameLost>}
                         {(currentWord === rightWord) && <GameWon><h1>{rightWord}</h1></GameWon>}
                     </GameWord>
@@ -40,17 +40,17 @@ export default function App() {
             </Header>
             <AlfabetoLine>
                 {(!gameGoing || error >= 6 || endGame) && alfabeto.map((s) =>
-                    <LetterOff><p>{s}</p>
+                    <LetterOff data-identifier="letter"><p>{s}</p>
                     </LetterOff>)}
                 {gameGoing && error < 6 && !endGame && alfabeto.map((l) =>
-                    <LetterOn disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame)}><p>{l}</p></LetterOn>)}
+                    <LetterOn data-identifier="letter" disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame)}><p>{l}</p></LetterOn>)}
             </AlfabetoLine>
 
             <GuessBox>
                 <h2>Já sei a palavra!</h2>
                 <GuessImput type="text" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
                 {(!gameGoing || endGame ) && <GuessButton><p>Chutar</p></GuessButton>}
-                {gameGoing && !endGame && <GuessButton onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame)}><p>Chutar</p></GuessButton>}
+                {gameGoing && !endGame && <GuessButton data-identifier="guess-button" onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame)}><p>Chutar</p></GuessButton>}
             </GuessBox>
         </Container>
 
@@ -179,9 +179,11 @@ function TryLetter(letter, lettersDone, setLettersDone, setError, error, rightWo
         setCurrentWord(rightWord)
         setEndGame(true)
     }
+    
     let NewLetter = [letter]
     let NewCurrentArray = [...lettersDone, ...NewLetter]
     setLettersDone(NewCurrentArray)
+
 }
 
 function StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone, setEndGame) {
@@ -349,3 +351,9 @@ const GuessButton = styled.button`
     }
 
 `
+
+
+
+
+
+
