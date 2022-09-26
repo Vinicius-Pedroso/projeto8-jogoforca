@@ -8,7 +8,8 @@ export default function App() {
     const [error, setError] = useState(0)
     const [rightWord, setRightWord] = useState("")
     const [currentWord, setCurrentWord] = useState("")
-    const [lettersDone, setLettersDone] = ("")
+    const [guess, setGuess] = useState("")
+    const [lettersDone, setLettersDone] = useState("")
 
     const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
@@ -37,28 +38,35 @@ export default function App() {
 
             </Header>
             <AlfabetoLine>
-                {(gameGoing === false || error >= 6) && alfabeto.map((s) =>
+                {(!gameGoing || error >= 6) && alfabeto.map((s) =>
                     <LetterOff><p>{s}</p>
                     </LetterOff>)}
-                {gameGoing === true && error < 6 && alfabeto.map((s) =>
-                    <LetterOn onClick={() => TryLetter({ s, setLettersDone })}><p>{s}</p></LetterOn>)}
+                {gameGoing && error < 6 && alfabeto.map((s) =>
+                    <LetterOn onClick={() => TryLetter({ s, lettersDone, setLettersDone, setError, error})}><p>{s}</p></LetterOn>)}
             </AlfabetoLine>
 
             <GuessBox>
-                <p>Já sei a palavra!</p>
-                <GuessImput></GuessImput>
-                <GuessButton onClick={() => setError(error + 1)}><p>Chutar</p></GuessButton>
+                <h2>Já sei a palavra!</h2>
+                <GuessImput type="text" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
+                {!gameGoing && <GuessButton><p>Chutar</p></GuessButton>}
+                {gameGoing && <GuessButton onClick={() => TryGuess({guess, rightWord, setCurrentWord, setError})}><p>Chutar</p></GuessButton>}
             </GuessBox>
         </Container>
 
     );
 }
 
-function TryLetter({ Letter, setLettersDone }) {
-    console.log(Letter)
+function TryGuess ({guess, rightWord, setCurrentWord, setError}){
+    if (guess === rightWord){
+        setCurrentWord(rightWord)
+    } else {
+        setError(6)
+    }
+}
 
+function TryLetter({ Letter, lettersDone, setLettersDone, setError, error}) {
+    setError(error +1)
     setLettersDone(+ Letter);
-
 }
 
 function StartOfTheGame({ setError, setGameGoing, setRightWord, setCurrentWord }) {
@@ -68,6 +76,7 @@ function StartOfTheGame({ setError, setGameGoing, setRightWord, setCurrentWord }
     const max = 231;
     const rand = Math.round(min + Math.random() * (max));
     setRightWord(palavras[rand])
+    console.log(palavras[rand])
     let current = []
     for (let i = 0; i < palavras[rand].length; i++) {
         current.push("_ ")
@@ -78,14 +87,17 @@ function StartOfTheGame({ setError, setGameGoing, setRightWord, setCurrentWord }
 
 
 const LayoutButton = styled.div`
-    padding-top: 47px;
+    padding-top: 30px;
+    padding-left: 105px;
     display: flex;
     justify-content: end;
 `
 
 const Escolher = styled.button`
-    background-color: green;
+    background-color: lightgreen;
     border-radius: 5px;
+    border-width: 1px;
+    border-color: green;
     width: 137px;
     height: 40px;
     p{
@@ -95,7 +107,7 @@ const Escolher = styled.button`
 `
 
 const LeftColunm = styled.div`
-    padding-left: 105px;
+    width: 280px;
     display: block;
 `
 
@@ -104,7 +116,7 @@ const Header = styled.div`
     padding-bottom: 30px;
 `
 const GameWord = styled.div`
-    margin-top: 550px;
+    margin-top: 250px;
     display: flex;
     align-items: end;
     justify-content: end;
@@ -118,14 +130,13 @@ const AlfabetoLine = styled.div`
     width: 100%;
     padding-bottom: 10px;
     display: flex;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: 10px;
     justify-content: space-between;
 `
 
 const LetterOff = styled.button`
-    width: 40px;
-    height: 40px;
+    width: 33px;
+    height: 33px;
     background-color: gray;
     border-radius: 4px;
     border-width: 1px;
@@ -138,8 +149,8 @@ const LetterOff = styled.button`
 `
 
 const LetterOn = styled.button`
-    width: 40px;
-    height: 40px;
+    width: 33px;
+    height: 33px;
     background-color: lightblue;
     border-radius: 4px;
     border-width: 1px;
@@ -167,11 +178,10 @@ const GameWon = styled.div`
 const Container = styled.div`
     padding-top: 20px;
     padding-left: 20px;
-    width: 80%;
+    width: 650px;
     height: 100%;
     img{
-        max-width: 80%;
-        max-height: 70%;
+        max-height: 380px;
     }
 
     p {
@@ -179,9 +189,11 @@ const Container = styled.div`
     }
 
     h1 {
-        font-size: 36px;
+        font-size: 28px;
         font-weight: bold;
-        color: black;
+    }
+    h2 {
+        padding-right: 20px;
     }
 `
 
@@ -191,18 +203,18 @@ const GuessBox = styled.div`
     align-items: center;
 `
 const GuessImput = styled.input`
-height: 30px;
+    height: 28px;
     border-radius: 3px;
     border-width: 1px;
-    border-color: black;
+    border-color: gray;
 `
 const GuessButton = styled.button`
-margin-left: 20px;
-height: 30px;
-width: 100px;
+    margin-left: 20px;
+    height: 33px;
+    width: 100px;
     background-color: lightblue;
     border-radius: 4px;
-    border-width: 2px;
+    border-width: 1px;
     border-color: blue;
     p{
         color: blue;
