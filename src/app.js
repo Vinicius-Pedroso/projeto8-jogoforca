@@ -12,6 +12,7 @@ export default function App() {
     const [lettersDone, setLettersDone] = useState([])
     const [endGame, setEndGame] = useState(false)
 
+
     const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
     return (
@@ -31,26 +32,26 @@ export default function App() {
                         </Escolher>
                     </LayoutButton>
                     <GameWord data-identifier="type-guess">
-                        {gameGoing && (currentWord !== rightWord) && error < 6 && <h1 data-identifier="word">{currentWord}</h1>}
+                        {gameGoing && currentWord.includes("_ ") && error < 6 && <h1 data-identifier="word">{currentWord}</h1>}
                         {error >= 6 && <GameLost><h1>{rightWord}</h1></GameLost>}
-                        {(currentWord === rightWord) && <GameWon><h1>{rightWord}</h1></GameWon>}
+                        {error < 6 && !currentWord.includes("_ ") &&<GameWon><h1>{rightWord}</h1></GameWon>}
                     </GameWord>
                 </LeftColunm>
 
             </Header>
             <AlfabetoLine>
-                {(!gameGoing || error >= 6 || endGame) && alfabeto.map((s) =>
+                {(!gameGoing || error >= 6 || endGame ||(!currentWord.includes("_ ") && gameGoing)) && alfabeto.map((s) =>
                     <LetterOff data-identifier="letter"><p>{s}</p>
                     </LetterOff>)}
-                {gameGoing && error < 6 && !endGame && alfabeto.map((l) =>
+                {gameGoing && error < 6 && !endGame && currentWord.includes("_ ") && alfabeto.map((l) =>
                     <LetterOn data-identifier="letter" disabled={lettersDone.includes(l)} onClick={() => TryLetter(l, lettersDone, setLettersDone, setError, error, rightWord, setCurrentWord, currentWord, setEndGame)}><p>{l}</p></LetterOn>)}
             </AlfabetoLine>
 
             <GuessBox>
                 <h2>Já sei a palavra!</h2>
                 <GuessImput type="text" value={guess} onChange={e => setGuess(e.target.value)}></GuessImput>
-                {(!gameGoing || endGame ) && <GuessButton><p>Chutar</p></GuessButton>}
-                {gameGoing && !endGame && <GuessButton data-identifier="guess-button" onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame)}><p>Chutar</p></GuessButton>}
+                {(!gameGoing || endGame || (!currentWord.includes("_ ") && gameGoing)) && <GuessButton><p>Chutar</p></GuessButton>}
+                {gameGoing && !endGame && currentWord.includes("_ ") && <GuessButton data-identifier="guess-button" onClick={() => TryGuess(guess, rightWord, setCurrentWord, setError, setEndGame)}><p>Chutar</p></GuessButton>}
             </GuessBox>
         </Container>
 
@@ -187,15 +188,19 @@ function TryLetter(letter, lettersDone, setLettersDone, setError, error, rightWo
 }
 
 function StartOfTheGame(setError, setGameGoing, setRightWord, setCurrentWord, setLettersDone, setEndGame) {
+
     setError(0)
     setEndGame(false)
     setGameGoing(true)
     setLettersDone([])
+
     const min = 0;
     const max = 231;
     const rand = Math.round(min + Math.random() * (max));
+
     setRightWord(palavras[rand])
     console.log(palavras[rand])
+
     let current = []
     for (let i = 0; i < palavras[rand].length; i++) {
         current.push("_ ")
